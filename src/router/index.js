@@ -6,7 +6,6 @@ import register from '@/page/register'
 import index from '@/page/index'
 
 Vue.use(Router)
-
 export default new Router({
     routes: [
         {

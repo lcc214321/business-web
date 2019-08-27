@@ -1,29 +1,7 @@
 <template>
     <div class="index">
-        <Menu mode="horizontal" :theme="theme1" active-name="1">
-            <Avatar icon="ios-briefcase" size="large" />
-            <MenuItem name="1">
-            四川小陌科技有限公司-业务跟踪系统
-            </MenuItem>
-        </Menu>
-        <Row>
-            <Col :xs="2" :sm="4" :md="6" :lg="8">
-            &ensp;
-            </Col>
-            <Col :xs="20" :sm="16" :md="12" :lg="8">
-            <Tabs value="sw">
-                <TabPane label="登录" name="sw">
-                    <login></login>
-                </TabPane>
-                <TabPane label="注册" name="">
-                    <register></register>
-                </TabPane>
-            </Tabs>
-            </Col>
-            <Col :xs="2" :sm="4" :md="6" :lg="8">
-            &ensp;
-            </Col>
-        </Row>
+        <navigation-bar></navigation-bar>
+        <Table border :columns="columns2" :data="data3"></Table>
     </div>
 </template>
 
@@ -32,22 +10,103 @@
 </style>
 
 <script>
-    import login from '../login'
-    import register from '../register'
+    import NavigationBar from '../../components/common/NavigationBar';
+    import axios from 'axios';
 
     export default {
         name: 'Index',
         data() {
             return {
-
+                columns2: [
+                    {
+                        title: '序号',
+                        key: 'name',
+                        width: 100,
+                        fixed: 'left'
+                    },
+                    {
+                        title: '业务日期',
+                        key: 'age',
+                        width: 100
+                    },
+                    {
+                        title: '项目名称',
+                        key: 'province',
+                        width: 100
+                    },
+                    {
+                        title: '项目地址',
+                        key: 'city',
+                        width: 100
+                    },
+                    {
+                        title: '消防工程公司',
+                        key: 'address',
+                        width: 200
+                    },
+                    {
+                        title: '联系人',
+                        key: 'zip',
+                        width: 100
+                    },
+                    {
+                        title: '电话',
+                        key: 'zip',
+                        width: 100
+                    },
+                    {
+                        title: '项目情况',
+                        key: 'zip',
+                        width: 100
+                    },
+                    {
+                        title: '备注说明',
+                        key: 'zip',
+                        width: 100
+                    }
+                ], data3: [
+                    {
+                        name: 'John Brown',
+                        age: 18,
+                        address: 'New York No. 1 Lake Park',
+                        province: 'America',
+                        city: 'New York',
+                        zip: 100000
+                    },
+                    {
+                        name: 'Jim Green',
+                        age: 24,
+                        address: 'Washington, D.C. No. 1 Lake Park',
+                        province: 'America',
+                        city: 'Washington, D.C.',
+                        zip: 100000
+                    },
+                ]
             };
         },
         components: {
-            login,
-            register
+            NavigationBar,
+        },
+        created: function () {
+            this.view();
         },
         methods: {
+            view: function () {
+                var _this = this;
 
+                // const baseURL = 'http://localhost:8080/';
+
+                axios({
+                    method: 'get',
+                    baseURL: 'http://localhost:8080/',
+                    url: 'api/item/view',
+                    headers: { 'Authorization': localStorage.getItem('token') },
+                }).then(function (response) {
+                    console.log(JSON.stringify(response));
+                }).catch(function (error) {
+                    console.log('请求失败', error);
+                })
+            }
         },
         mounted() {
 
