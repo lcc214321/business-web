@@ -1,7 +1,11 @@
 <template>
     <div class="index">
         <navigation-bar></navigation-bar>
-        <Table border :columns="columns2" :data="data3"></Table>
+        <Table border :columns="title" :data="itemData">
+            <!-- <template slot="item_notes">
+                <span>{{ item_notes }}</span>
+            </template> -->
+        </Table>
     </div>
 </template>
 
@@ -17,71 +21,89 @@
         name: 'Index',
         data() {
             return {
-                columns2: [
+                title: [
                     {
                         title: '序号',
-                        key: 'name',
+                        key: 'item_id',
                         width: 100,
-                        fixed: 'left'
+                        fixed: 'left',
+                        sortable: true
                     },
                     {
                         title: '业务日期',
-                        key: 'age',
-                        width: 100
+                        key: 'item_date',
+                        width: 150,
+                        sortable: true
                     },
                     {
                         title: '项目名称',
-                        key: 'province',
-                        width: 100
+                        key: 'item_name',
+                        width: 200
                     },
                     {
                         title: '项目地址',
-                        key: 'city',
-                        width: 100
+                        key: 'item_address',
+                        width: 300
                     },
                     {
                         title: '消防工程公司',
-                        key: 'address',
+                        key: 'item_buy_unit',
                         width: 200
                     },
                     {
                         title: '联系人',
-                        key: 'zip',
+                        key: 'item_contacts',
                         width: 100
                     },
                     {
                         title: '电话',
-                        key: 'zip',
-                        width: 100
+                        key: 'item_phone',
+                        width: 150
                     },
                     {
                         title: '项目情况',
-                        key: 'zip',
-                        width: 100
+                        key: 'item_info',
+                        width: 300
                     },
                     {
                         title: '备注说明',
-                        key: 'zip',
-                        width: 100
+                        key: 'item_notes',
+                        width: 150,
+                        filters: [
+                            {
+                                label: '未报价',
+                                value: 1
+                            },
+                            {
+                                label: '已报价',
+                                value: 2
+                            }
+                        ],
+                        //数据过滤的选项是否多选
+                        filterMultiple: false,
+                        filterMethod(value, row) {
+                            if (value == 1) {
+                                return row.item_notes == 1;
+                            } else if (value === 2) {
+                                return row.item_notes == 2;
+                            }
+                        }, render: function (h, params) {
+                            let texts = '';
+                            if (params.row.item_notes == 1) {
+                                texts = "未报价"
+                            } else if (params.row.item_notes == 2) {
+                                texts = "已报价"
+                            } else {
+                                texts = "未知状态"
+                            }
+                            return h('div', {
+                                props: {
+                                },
+                            }, texts)
+                        }
                     }
-                ], data3: [
-                    {
-                        name: 'John Brown',
-                        age: 18,
-                        address: 'New York No. 1 Lake Park',
-                        province: 'America',
-                        city: 'New York',
-                        zip: 100000
-                    },
-                    {
-                        name: 'Jim Green',
-                        age: 24,
-                        address: 'Washington, D.C. No. 1 Lake Park',
-                        province: 'America',
-                        city: 'Washington, D.C.',
-                        zip: 100000
-                    },
-                ]
+                ],
+                itemData: []
             };
         },
         components: {
@@ -94,17 +116,22 @@
             view: function () {
                 var _this = this;
 
-                // const baseURL = 'http://localhost:8080/';
+                const baseURL = 'http://localhost:8080/';
 
                 axios({
-                    method: 'get',
-                    baseURL: 'http://localhost:8080/',
-                    url: 'api/item/view',
-                    headers: { 'Authorization': localStorage.getItem('token') },
+                    method: 'GET',
+                    url: baseURL + 'api/item/view',
+                    headers: {
+                        'Authorization': localStorage.getItem('token')
+                    }
                 }).then(function (response) {
                     console.log(JSON.stringify(response));
+                    console.log(JSON.stringify(response.data.data.pageInfo.list));
+                    if (response.data.code == 200) {
+                        _this.itemData = response.data.data.pageInfo.list;
+                    }
                 }).catch(function (error) {
-                    console.log('请求失败', error);
+                    alert("请求失败");
                 })
             }
         },

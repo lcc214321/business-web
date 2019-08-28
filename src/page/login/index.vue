@@ -15,12 +15,6 @@
                     <FormItem label="密码">
                         <Input type="password" v-model="password" placeholder="请输入密码"></Input>
                     </FormItem>
-                    <FormItem label="验证码">
-                        <Input v-model="validCode" placeholder="请输入验证码"></Input>
-                        <br />
-                        <br />
-                        <valid-code></valid-code>
-                    </FormItem>
                     <FormItem>
                         <Button type="primary" @click="login()">登录</Button>
                     </FormItem>
@@ -41,7 +35,6 @@
 
 <script>
     import NavigationBar from '../../components/common/NavigationBar';
-    import ValidCode from '../../components/common/ValidCode';
     import axios from 'axios';
     import iView from 'iview'
     import md5 from 'js-md5';
@@ -53,12 +46,10 @@
             return {
                 phone: '',
                 password: '',
-                validCode: ''
             }
         },
         components: {
             NavigationBar,
-            ValidCode
         },
         created: function () {
             console.log(localStorage.getItem('token'));
@@ -101,11 +92,7 @@
                     //     height: 5
                     // });
                     iView.LoadingBar.start();
-                    axios.post(baseURL + '/api/user/login', data, {
-                        headers: {
-                            // 'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    }).then(function (response) {
+                    axios.post(baseURL + '/api/user/login', data).then(function (response) {
                         iView.LoadingBar.finish();
                         localStorage.setItem('token', 'Bearer ' + response.data.data.token);
                         Router.push('/index');
